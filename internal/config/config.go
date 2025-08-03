@@ -3,6 +3,7 @@ package config
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/landanqrew/rss-aggregator/internal/utils"
@@ -67,6 +68,31 @@ func (c *Config) SaveConfig() error {
 		return fmt.Errorf("error creating config file: %w", err)
 	}
 	return nil
+}
+
+func (c *Config) SaveConfigBoots() error {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return fmt.Errorf("error getting home directory: %w", err)
+	}
+	data, err := json.MarshalIndent(c, "", "  ")
+	if err != nil {
+		return fmt.Errorf("error marshalling config: %w", err)
+	}
+	err = utils.CreateFile(homeDir + "/.gatorconfig.json", data)
+	if err != nil {
+		return fmt.Errorf("error creating config file: %w", err)
+	}
+	return nil
+}
+
+
+func (c *Config) PrintCfg() {
+	jsonData,err := json.MarshalIndent(c, "", " ")
+	if err != nil {
+		log.Fatalf("error marshalling config: %v", err)
+	}
+	fmt.Println(string(jsonData))
 }
 
 
