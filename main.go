@@ -1,13 +1,16 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"os"
 
 	"github.com/landanqrew/rss-aggregator/internal/cmd"
 	"github.com/landanqrew/rss-aggregator/internal/config"
+	"github.com/landanqrew/rss-aggregator/internal/database"
 	"github.com/landanqrew/rss-aggregator/internal/state"
+	_ "github.com/lib/pq"
 )
 
 
@@ -18,8 +21,20 @@ func main() {
 		log.Fatalf("error loading config: %v", err)
 	}
 	s.Cfg = cfg
+	// Build Command Registry
 	commands := cmd.BuildCommandMap()
 	commands.Register("login", cmd.HandlerLogin)
+	commands.Register("register", cmd.HandlerRegister)
+	commands.Register("reset", cmd.HandlerReset)
+	commands.Register("users", cmd.HandlerUsers)
+
+	// Open Database Connection
+	db, err := sql.Open("postgres", s.Cfg.DBURL)
+	if err != nil {
+		log.Fatalf("error opening database: %v", err)
+	}
+	defer db.Close() // dont forget to close the database connection
+	s.DBQueries = database.New(db)
 	
 	args := os.Args[1:]
 	if len(args) == 0 {

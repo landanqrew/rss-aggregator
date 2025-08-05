@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
+	"os"
 
 	"github.com/landanqrew/rss-aggregator/internal/state"
 )
@@ -14,9 +16,20 @@ func HandlerLogin(s *state.State, cmd *Command) error {
 
 	username := cmd.Args[0]
 
+	_, err := s.DBQueries.GetUserByName(context.Background(), username)
+	if err != nil {
+		fmt.Println("user not found")
+		os.Exit(1)
+		return nil
+	}
+
 	s.Cfg.SetUser(username)
 
-	err := s.Cfg.SaveConfig()
+	err = s.Cfg.SaveConfig()
+	if err != nil {
+		return err
+	}
+	err = s.Cfg.SaveConfigBoots()
 	if err != nil {
 		return err
 	}
