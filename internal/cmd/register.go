@@ -34,7 +34,7 @@ func HandlerRegister(s *state.State, cmd *Command) error {
 	_, err = s.DBQueries.GetUserByName(context.Background(), username)
 	if err != nil {
 		if err != sql.ErrNoRows {
-			fmt.Printf("error getting user by name: %w", err)
+			fmt.Printf("error getting user by name: %v", err)
 			os.Exit(1)
 		}
 		fmt.Println("user not found, creating user")
