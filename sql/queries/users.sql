@@ -9,14 +9,16 @@ VALUES (
 RETURNING *;
 
 -- name: GetUserByName :one
-SELECT
-    *
+SELECT *
 FROM users
 WHERE name = $1
 LIMIT 1;
 
 -- name: RemoveAllUsers :exec
-TRUNCATE TABLE users;
+DELETE FROM users where 1=1;
 
 -- name: GetUsers :many
+SELECT * FROM users;
+
+-- name: GetAllUsers :many  
 SELECT * FROM users;

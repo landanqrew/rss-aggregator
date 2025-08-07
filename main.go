@@ -28,6 +28,7 @@ func main() {
 	commands.Register("reset", cmd.HandlerReset)
 	commands.Register("users", cmd.HandlerUsers)
 	commands.Register("agg", cmd.HandlerAgg)
+	commands.Register("addfeed", cmd.HandlerAddFeed)
 
 	// Open Database Connection
 	db, err := sql.Open("postgres", s.Cfg.DBURL)
