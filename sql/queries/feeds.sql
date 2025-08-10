@@ -17,6 +17,12 @@ FROM feeds
 WHERE name = sqlc.arg(name)
 LIMIT 1;
 
+-- name: GetFeedByURL :one
+SELECT id, created_at, updated_at, name, url, user_id
+FROM feeds
+WHERE url = sqlc.arg(url)
+LIMIT 1;
+
 -- name: RemoveAllFeeds :exec
 TRUNCATE TABLE feeds;
 
