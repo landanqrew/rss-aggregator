@@ -31,3 +31,11 @@ SELECT id, created_at, updated_at, name, url, user_id FROM feeds;
 
 -- name: GetAllFeeds :many
 SELECT id, created_at, updated_at, name, url, user_id FROM feeds;
+
+-- name: MarkFeedFetched :exec
+UPDATE feeds SET last_fetched_at = sqlc.arg(last_fetched_at), updated_at = sqlc.arg(updated_at) WHERE id = sqlc.arg(id);
+
+-- name: GetNextFeedToFetch :one
+SELECT id, name, url, user_id, last_fetched_at, created_at, updated_at FROM feeds
+ORDER BY last_fetched_at ASC NULLS FIRST
+LIMIT 1;

@@ -28,10 +28,11 @@ func main() {
 	commands.Register("reset", cmd.HandlerReset)
 	commands.Register("users", cmd.HandlerUsers)
 	commands.Register("agg", cmd.HandlerAgg)
-	commands.Register("addfeed", cmd.HandlerAddFeed)
+	commands.Register("addfeed", cmd.MiddlewareHandler(cmd.HandlerAddFeed))
 	commands.Register("feeds", cmd.HandlerFeeds)
-	commands.Register("follow", cmd.HandlerFollow)
-	commands.Register("following", cmd.HandlerFollowing)
+	commands.Register("follow", cmd.MiddlewareHandler(cmd.HandlerFollow))
+	commands.Register("following", cmd.MiddlewareHandler(cmd.HandlerFollowing))
+	commands.Register("unfollow", cmd.MiddlewareHandler(cmd.HandlerUnfollow))
 
 	// Open Database Connection
 	db, err := sql.Open("postgres", s.Cfg.DBURL)
