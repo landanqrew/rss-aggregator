@@ -44,6 +44,6 @@ func HandlerAddFeed(s *state.State, cmd *Command, user database.User) error {
 		return fmt.Errorf("error creating feed follow, %w", err)
 	}
 
-	fmt.Printf("Feed created: %+v\n", feedFollow)
+	fmt.Printf("Feed created: %+v\n for user %s\n", feedFollow, user.Name)
 	return nil
 }

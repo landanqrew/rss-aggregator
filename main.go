@@ -33,6 +33,7 @@ func main() {
 	commands.Register("follow", cmd.MiddlewareHandler(cmd.HandlerFollow))
 	commands.Register("following", cmd.MiddlewareHandler(cmd.HandlerFollowing))
 	commands.Register("unfollow", cmd.MiddlewareHandler(cmd.HandlerUnfollow))
+	commands.Register("browse", cmd.MiddlewareHandler(cmd.HandlerBrowse))
 
 	// Open Database Connection
 	db, err := sql.Open("postgres", s.Cfg.DBURL)

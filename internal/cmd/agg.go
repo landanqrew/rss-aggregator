@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/landanqrew/rss-aggregator/internal/database"
 	"github.com/landanqrew/rss-aggregator/internal/rss"
 	"github.com/landanqrew/rss-aggregator/internal/state"
@@ -61,7 +62,26 @@ func scrapeFeeds(s *state.State) error {
 	}
 
 	for _, item := range rssFeed.Channel.Item {
-		fmt.Println(item.Title)
+		exists, err := s.DBQueries.CheckPostExists(context.Background(), item.Link)
+		if err != nil {
+			return fmt.Errorf("error checking if post exists, %w", err)
+		}
+		if exists == 0 {
+			publishedAt, err := time.Parse(time.RFC1123, item.PubDate)
+			if err != nil {
+				return fmt.Errorf("error parsing published at (%s), %w", item.PubDate, err)
+			}
+			s.DBQueries.CreatePost(context.Background(), database.CreatePostParams{
+				ID:          uuid.New().String(),
+				CreatedAt:   time.Now(),
+				UpdatedAt:   time.Now(),
+				Title:       item.Title,
+				Url:         item.Link,
+				Description: item.Description,
+				PublishedAt: publishedAt,
+				FeedID:      feed.ID,
+			})
+		}
 	}
 
 	return nil
